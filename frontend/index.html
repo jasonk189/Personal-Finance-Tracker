@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Finance Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Finance Tracker</h1>
+  <form id="transactionForm">
+    <input type="date" name="date" required />
+    <select name="type">
+      <option value="Income">Income</option>
+      <option value="Expense">Expense</option>
+    </select>
+    <input type="text" name="category" placeholder="Category" required />
+    <input type="text" name="description" placeholder="Description" />
+    <input type="number" name="amount" placeholder="Amount" required />
+    <button type="submit">Add</button>
+  </form>
+
+  <table id="transactionsTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
