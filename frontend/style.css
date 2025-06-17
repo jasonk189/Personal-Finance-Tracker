@@ -1,26 +1,43 @@
-/* Reset some default styles */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --card-bg: #f0f0f0;
+  --primary-color: #0077cc;
+  --primary-hover: #005fa3;
+  --danger-color: #e74c3c;
+  --danger-hover: #c0392b;
+  --highlight-color: #f1f7ff;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --highlight-color: #1a1f2e;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  background-color: #f9f9f9;
 }
 
 body {
   max-width: 900px;
   margin: 2rem auto;
   padding: 1rem;
-  background: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #0077cc;
+  color: var(--primary-color);
 }
 
 form {
@@ -29,6 +46,9 @@ form {
   gap: 1rem;
   margin-bottom: 2rem;
   justify-content: center;
+  background-color: var(--card-bg);
+  padding: 10px;
+  border-radius: 6px;
 }
 
 form input,
@@ -49,7 +69,7 @@ form input[type="number"] {
 }
 
 form button {
-  background-color: #0077cc;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   cursor: pointer;
@@ -59,13 +79,16 @@ form button {
 }
 
 form button:hover {
-  background-color: #005fa3;
+  background-color: var(--primary-hover);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  background-color: var(--card-bg);
+  border-radius: 6px;
+  margin-top: 20px;
 }
 
 th, td {
@@ -75,16 +98,16 @@ th, td {
 }
 
 th {
-  background-color: #0077cc;
+  background-color: var(--primary-color);
   color: white;
 }
 
 tr:hover {
-  background-color: #f1f7ff;
+  background-color: var(--highlight-color);
 }
 
 button {
-  background: #e74c3c;
+  background: var(--danger-color);
   border: none;
   color: white;
   padding: 0.4rem 0.7rem;
@@ -94,10 +117,9 @@ button {
 }
 
 button:hover {
-  background: #c0392b;
+  background: var(--danger-hover);
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   form {
     flex-direction: column;
@@ -108,4 +130,24 @@ button:hover {
   form button {
     flex: 1 1 100%;
   }
+}
+
+#themeToggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+#themeIcon {
+  display: inline-block;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#themeIcon.fade-out {
+  opacity: 0;
+  transform: rotate(180deg) scale(0.8);
 }

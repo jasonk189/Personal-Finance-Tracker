@@ -66,3 +66,51 @@ async function addTransaction(transaction) {
 
 
 loadTransactions();
+
+
+// Theme toggle functionality
+
+function setCookie(name, value, days) {
+  const expires = new Date(Date.now() + days * 86400000).toUTCString();
+  document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+function updateIcon(theme) {
+  const icon = document.getElementById('themeIcon');
+  icon.classList.add('fade-out');
+
+  setTimeout(() => {
+    icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+    icon.classList.remove('fade-out');
+  }, 150); // Halfway through the transition
+}
+
+
+function applyTheme(theme) {
+  document.body.classList.toggle('dark', theme === 'dark');
+  setCookie('theme', theme, 365);
+  updateIcon(theme);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = getCookie('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+  applyTheme(theme);
+});
+
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.body.classList.toggle('dark');
+  const newTheme = isDark ? 'dark' : 'light';
+  setCookie('theme', newTheme, 365);
+  updateIcon(newTheme);
+});
+
+
+
