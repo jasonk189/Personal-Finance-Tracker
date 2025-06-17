@@ -9,7 +9,7 @@
   --highlight-color: #f1f7ff;
 }
 
-body.dark {
+html.dark {
   --bg-color: #121212;
   --text-color: #e0e0e0;
   --card-bg: #1e1e1e;

@@ -3,6 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <title>Finance Tracker</title>
+  <script>
+    (function() {
+      const match = document.cookie.match(new RegExp('(^| )theme=([^;]+)'));
+      const savedTheme = match ? match[2] : null;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -21,6 +32,8 @@
     <input type="number" name="amount" placeholder="Amount" required />
     <button type="submit">Add</button>
   </form>
+
+  <button type="button" id="cancelEdit" style="display: none;">Cancel Edit</button>
 
   <table id="transactionsTable">
   <thead>

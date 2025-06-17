@@ -7,7 +7,18 @@ bp = Blueprint('api', __name__)
 @bp.route('/transactions', methods=['GET'])
 def get_transactions():
     transactions = Transaction.query.all()
-    return jsonify([t.to_dict() for t in transactions])
+    return jsonify([
+        {
+            'id': t.id,
+            'date': t.date,
+            'type': t.type,
+            'category': t.category,
+            'description': t.description,
+            'amount': t.amount
+        }
+        for t in transactions
+    ])
+
 
 # POST a new transaction
 @bp.route('/transactions', methods=['POST'])
@@ -35,3 +46,17 @@ def delete_transaction(id):
     db.session.commit()
     return jsonify({"message": "Transaction deleted"})
 
+# PUT to update a transaction by ID
+@bp.route('/transactions/<int:id>', methods=['PUT'])
+def update_transaction(id):
+    t = Transaction.query.get_or_404(id)
+    data = request.get_json()
+
+    t.date = data.get('date', t.date)
+    t.type = data.get('type', t.type)
+    t.category = data.get('category', t.category)
+    t.description = data.get('description', t.description)
+    t.amount = data.get('amount', t.amount)
+
+    db.session.commit()
+    return jsonify({"message": "Transaction updated"})
