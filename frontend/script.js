@@ -5,29 +5,6 @@ let sortKey = null;       // 'date' or 'amount'
 let sortOrder = 'asc';    // 'asc' or 'desc'
 
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData.entries());
-  data.amount = parseFloat(data.amount); // ensure numeric
-
-  const url = editingId
-  ? `http://127.0.0.1:5000/api/transactions/${editingId}`
-  : 'http://127.0.0.1:5000/api/transactions';
-  const method = editingId ? 'PUT' : 'POST';
-
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-
-  if (res.ok) {
-    loadTransactions();
-    form.reset();
-    editingId = null;
-  }
-});
 
 
 let allTransactions = []; // store all transactions globally
@@ -77,12 +54,14 @@ const tableBody = document.querySelector('#transactionsTable tbody');
 tableBody.innerHTML = '';
 filtered.forEach(tx => {
   const row = document.createElement('tr');
+  const amountClass = tx.type === 'Income' ? 'amount-income' : 'amount-expense';
+
   row.innerHTML = `
     <td>${tx.date}</td>
     <td>${tx.type}</td>
     <td>${tx.category}</td>
     <td>${tx.description}</td>
-    <td>$${parseFloat(tx.amount).toFixed(2)}</td>
+    <td class="${amountClass}">$${parseFloat(tx.amount).toFixed(2)}</td>
     <td>
       <button class="editBtn">Edit</button>
       <button class="deleteBtn">Delete</button>
@@ -94,6 +73,27 @@ filtered.forEach(tx => {
 
   tableBody.appendChild(row);
 });
+
+// Calculate totals and display them
+  let totalIncome = 0;
+  let totalExpense = 0;
+
+  filtered.forEach(tx => {
+    const amt = parseFloat(tx.amount);
+    if (tx.type === 'Income') totalIncome += amt;
+    else if (tx.type === 'Expense') totalExpense += amt;
+  });
+
+  const net = totalIncome - totalExpense;
+  const totalCell = document.getElementById('totalCell');
+  if (totalCell) {
+    totalCell.innerHTML = `
+      <div><span style="color: green;">Income:</span> $${totalIncome.toFixed(2)}</div>
+      <div><span style="color: red;">Expenses:</span> $${totalExpense.toFixed(2)}</div>
+      <div><strong>Net:</strong> $${net.toFixed(2)}</div>
+    `;
+  }
+
 }
 
 
@@ -210,6 +210,39 @@ document.getElementById('sortAmount').addEventListener('click', () => {
 
 // Call once on page load to initialize
 updateSortIndicators();
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  data.amount = parseFloat(data.amount);
+
+  // Validate amount
+  if (isNaN(data.amount) || data.amount < 0 || !/^\d+(\.\d{1,2})?$/.test(data.amount.toFixed(2))) {
+    alert('Amount must be a non-negative number with up to 2 decimal places.');
+    return;
+  }
+
+  const url = editingId
+    ? `http://127.0.0.1:5000/api/transactions/${editingId}`
+    : 'http://127.0.0.1:5000/api/transactions';
+  const method = editingId ? 'PUT' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+
+  if (res.ok) {
+    form.reset();
+    editingId = null;
+    loadTransactions(currentFilters); // retain filters/sort
+  } else {
+    alert('Failed to save transaction');
+  }
+});
 
 
 
