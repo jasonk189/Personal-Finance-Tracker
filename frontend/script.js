@@ -1,6 +1,9 @@
 const form = document.getElementById('transactionForm');
 const table = document.getElementById('transactionsTable');
 
+let expensePieChart = null;
+let monthlyLineChart = null;
+
 let sortKey = null;       // 'date' or 'amount'
 let sortOrder = 'asc';    // 'asc' or 'desc'
 
@@ -112,26 +115,68 @@ function updateCharts(transactions) {
   });
 
   const pieCtx = document.getElementById('expensePieChart').getContext('2d');
-  if (window.expensePieChart && typeof window.expensePieChart.destroy === 'function') {
-    window.expensePieChart.destroy();
-  }
-  window.expensePieChart = new Chart(pieCtx, {
+  if (expensePieChart) expensePieChart.destroy();
+
+  const categories = Object.keys(expenseByCategory);
+  const amounts = Object.values(expenseByCategory);
+
+  // Fixed palette of distinct colors
+  const COLORS = [
+    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+    '#FF9F40', '#66FF66', '#FF6666', '#6699FF', '#FFCC99'
+  ];
+  const backgroundColors = categories.map((_, i) => COLORS[i % COLORS.length]);
+
+  // Check if ChartDataLabels plugin is available
+  const plugins = (typeof ChartDataLabels !== 'undefined') ? [ChartDataLabels] : [];
+
+  expensePieChart = new Chart(pieCtx, {
     type: 'pie',
     data: {
-      labels: Object.keys(expenseByCategory),
+      labels: categories,
       datasets: [{
-        data: Object.values(expenseByCategory),
-        backgroundColor: Object.keys(expenseByCategory).map(() =>
-          `hsl(${Math.random() * 360}, 70%, 60%)`
-        )
+        data: amounts,
+        backgroundColor: backgroundColors,
+        borderColor: '#fff',
+        borderWidth: 2,
       }]
     },
     options: {
-      responsive: true
-    }
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'right',
+          labels: {
+            boxWidth: 20,
+            padding: 15,
+            font: {
+              size: 14,
+              weight: 'bold'
+            }
+          }
+        },
+        datalabels: {
+          color: '#fff',
+          formatter: (value, ctx) => {
+            const dataArr = ctx.chart.data.datasets[0].data;
+            const total = dataArr.reduce((a, b) => a + b, 0);
+            const percentage = (value / total * 100).toFixed(1);
+            return percentage + '%';
+          },
+          font: {
+            weight: 'bold',
+            size: 12,
+          },
+          anchor: 'center',
+          align: 'center',
+        }
+      }
+    },
+    plugins: plugins
   });
 
-  // Monthly Spending Trend (both income & expenses)
+  // Monthly Spending Trend (Income & Expenses)
   const monthlyTotals = {};
   transactions.forEach(tx => {
     const date = new Date(tx.date);
@@ -146,10 +191,9 @@ function updateCharts(transactions) {
   const expenseData = months.map(m => monthlyTotals[m].Expense);
 
   const lineCtx = document.getElementById('monthlyLineChart').getContext('2d');
-  if (window.monthlyLineChart && typeof window.monthlyLineChart.destroy === 'function') {
-    window.monthlyLineChart.destroy();
-  }
-  window.monthlyLineChart = new Chart(lineCtx, {
+  if (monthlyLineChart) monthlyLineChart.destroy();
+
+  monthlyLineChart = new Chart(lineCtx, {
     type: 'line',
     data: {
       labels: months,
@@ -158,13 +202,17 @@ function updateCharts(transactions) {
           label: 'Income',
           data: incomeData,
           borderColor: 'green',
-          fill: false
+          backgroundColor: 'rgba(0, 128, 0, 0.1)',
+          fill: true,
+          tension: 0.3,
         },
         {
           label: 'Expenses',
           data: expenseData,
           borderColor: 'red',
-          fill: false
+          backgroundColor: 'rgba(255, 0, 0, 0.1)',
+          fill: true,
+          tension: 0.3,
         }
       ]
     },
@@ -172,7 +220,18 @@ function updateCharts(transactions) {
       responsive: true,
       plugins: {
         legend: {
-          position: 'top'
+          position: 'top',
+          labels: {
+            font: {
+              size: 14,
+              weight: 'bold'
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
         }
       }
     }
