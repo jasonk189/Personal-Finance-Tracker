@@ -35,20 +35,51 @@
 
   <button type="button" id="cancelEdit" style="display: none;">Cancel Edit</button>
 
+  <div id="filters">
+    <label>
+      Start Date: 
+      <input type="date" id="filterStartDate">
+    </label>
+    <label>
+      End Date: 
+      <input type="date" id="filterEndDate">
+    </label>
+
+    <select id="filterType">
+      <option value="">All Types</option>
+      <option value="Income">Income</option>
+      <option value="Expense">Expense</option>
+    </select>
+
+    <input type="text" id="filterCategory" placeholder="Category">
+
+    <button id="applyFilters">Apply Filters</button>
+    <button id="clearFilters">Clear Filters</button>
+  </div>
+
   <table id="transactionsTable">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Type</th>
-      <th>Category</th>
-      <th>Description</th>
-      <th>Amount</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
+    <thead>
+      <tr>
+        <th id="sortDate" class="sortable">
+          Date
+          <span class="sort-arrow up">&#9650;</span>
+          <span class="sort-arrow down">&#9660;</span>
+        </th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th id="sortAmount" class="sortable">
+          Amount
+          <span class="sort-arrow up">&#9650;</span>
+          <span class="sort-arrow down">&#9660;</span>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows -->
+    </tbody>
+  </table>
 
 
   <script src="script.js"></script>

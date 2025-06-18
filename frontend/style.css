@@ -151,3 +151,58 @@ button:hover {
   opacity: 0;
   transform: rotate(180deg) scale(0.8);
 }
+
+
+/* Make sortable headers look clickable */
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 20px; /* space for arrows */
+}
+
+/* The arrows container: darker and more visible */
+.sort-arrow {
+  font-size: 0.8em;              /* slightly bigger */
+  color: #444;                  /* darker gray instead of #bbb */
+  opacity: 0.7;                 /* more visible */
+  position: absolute;
+  right: 5px;
+  transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;         /* ignore mouse */
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-block;
+  width: 12px;
+  text-align: center;
+  line-height: 1;
+}
+
+/* Position arrows stacked vertically */
+th.sortable .up {
+  top: 40%;
+}
+
+th.sortable .down {
+  top: 60%;
+}
+
+/* On hover: even darker and more visible */
+th.sortable:hover .sort-arrow {
+  opacity: 1;
+  color: #222;                 /* very dark */
+}
+
+/* When sorted ascending: up arrow active */
+th.sortable.sorted-asc .up {
+  color: #0056b3;              /* deeper blue */
+  opacity: 1;
+  transform: translateY(-50%) scale(1.3);  /* slightly bigger */
+}
+
+/* When sorted descending: down arrow active */
+th.sortable.sorted-desc .down {
+  color: #0056b3;              /* deeper blue */
+  opacity: 1;
+  transform: translateY(-50%) scale(1.3);  /* slightly bigger */
+}
