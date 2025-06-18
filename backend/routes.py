@@ -1,5 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response
 from models import db, Transaction
+import csv
+import io
 
 bp = Blueprint('api', __name__)
 
@@ -60,3 +62,44 @@ def update_transaction(id):
 
     db.session.commit()
     return jsonify({"message": "Transaction updated"})
+
+
+@bp.route('/export', methods=['GET'])
+def export_transactions_csv():
+    start_date = request.args.get('startDate')
+    end_date = request.args.get('endDate')
+
+    query = Transaction.query
+
+    if start_date:
+        query = query.filter(Transaction.date >= start_date)
+    if end_date:
+        query = query.filter(Transaction.date <= end_date)
+
+    transactions = query.all()
+
+    # Create in-memory CSV
+    si = io.StringIO()
+    writer = csv.writer(si)
+    writer.writerow(['ID', 'Date', 'Type', 'Category', 'Description', 'Amount'])
+
+    for t in transactions:
+        writer.writerow([
+            t.id,
+            t.date.isoformat() if hasattr(t.date, 'isoformat') else t.date,
+            t.type,
+            t.category,
+            t.description,
+            f"{t.amount:.2f}"
+        ])
+
+    output = si.getvalue()
+    si.close()
+
+    return Response(
+        output,
+        mimetype='text/csv',
+        headers={
+            "Content-Disposition": "attachment; filename=transactions.csv"
+        }
+    )

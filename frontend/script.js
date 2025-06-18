@@ -328,6 +328,39 @@ form.addEventListener('submit', async (e) => {
 });
 
 
+function downloadCSV() {
+  const startDate = document.getElementById('filterStartDate').value;
+  const endDate = document.getElementById('filterEndDate').value;
+
+  let url = 'http://127.0.0.1:5000/api/export';
+  const params = new URLSearchParams();
+  if (startDate) params.append('startDate', startDate);
+  if (endDate) params.append('endDate', endDate);
+  if (params.toString()) url += '?' + params.toString();
+
+  window.location.href = url; // triggers download
+}
+
+document.getElementById('exportCsvBtn').addEventListener('click', async () => {
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/export');
+    if (!res.ok) throw new Error('Failed to fetch CSV');
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transactions.csv';
+    document.body.appendChild(a);
+    a.click();
+
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    alert('Error exporting CSV: ' + error.message);
+  }
+});
 
 
 // Theme toggle functionality
