@@ -94,6 +94,89 @@ filtered.forEach(tx => {
     `;
   }
 
+  
+  updateCharts(filtered);
+
+
+}
+
+function updateCharts(transactions) {
+  // Expense Breakdown by Category
+  const expenseByCategory = {};
+  transactions.forEach(tx => {
+    if (tx.type === 'Expense') {
+      const cat = tx.category;
+      const amt = parseFloat(tx.amount);
+      expenseByCategory[cat] = (expenseByCategory[cat] || 0) + amt;
+    }
+  });
+
+  const pieCtx = document.getElementById('expensePieChart').getContext('2d');
+  if (window.expensePieChart && typeof window.expensePieChart.destroy === 'function') {
+    window.expensePieChart.destroy();
+  }
+  window.expensePieChart = new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: Object.keys(expenseByCategory),
+      datasets: [{
+        data: Object.values(expenseByCategory),
+        backgroundColor: Object.keys(expenseByCategory).map(() =>
+          `hsl(${Math.random() * 360}, 70%, 60%)`
+        )
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+
+  // Monthly Spending Trend (both income & expenses)
+  const monthlyTotals = {};
+  transactions.forEach(tx => {
+    const date = new Date(tx.date);
+    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const amt = parseFloat(tx.amount);
+    if (!monthlyTotals[month]) monthlyTotals[month] = { Income: 0, Expense: 0 };
+    monthlyTotals[month][tx.type] += amt;
+  });
+
+  const months = Object.keys(monthlyTotals).sort();
+  const incomeData = months.map(m => monthlyTotals[m].Income);
+  const expenseData = months.map(m => monthlyTotals[m].Expense);
+
+  const lineCtx = document.getElementById('monthlyLineChart').getContext('2d');
+  if (window.monthlyLineChart && typeof window.monthlyLineChart.destroy === 'function') {
+    window.monthlyLineChart.destroy();
+  }
+  window.monthlyLineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Income',
+          data: incomeData,
+          borderColor: 'green',
+          fill: false
+        },
+        {
+          label: 'Expenses',
+          data: expenseData,
+          borderColor: 'red',
+          fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top'
+        }
+      }
+    }
+  });
 }
 
 
