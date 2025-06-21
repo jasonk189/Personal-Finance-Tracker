@@ -17,7 +17,7 @@ A full-stack personal finance tracker web app for recording income and expenses,
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 **Frontend**
 
@@ -34,17 +34,11 @@ A full-stack personal finance tracker web app for recording income and expenses,
 
 ---
 
-## 🚀 Getting Started
-
-### 🔧 Prerequisites
-
-- Python 3.x
-- Node.js (optional if using Tailwind/PostCSS)
-- Git
+## Getting Started
 
 ---
 
-### 🐍 Backend Setup (Flask + SQLite)
+### Backend Setup (Flask + SQLite)
 
 1. Clone the repo:
 
@@ -72,7 +66,9 @@ pip install -r requirements.txt
 python app.py
 ```
 
-5. Open index.html in a browser:
+### Frontend Setup
+
+1. Open index.html in a browser:
 
 📦 API Endpoints
 | Method | Endpoint | Description |
