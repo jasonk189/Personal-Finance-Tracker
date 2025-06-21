@@ -70,9 +70,9 @@ pip install -r requirements.txt
 
 ```bash
 python app.py
-
-Open index.html in a browser:
 ```
+
+5. Open index.html in a browser:
 
 📦 API Endpoints
 | Method | Endpoint | Description |
