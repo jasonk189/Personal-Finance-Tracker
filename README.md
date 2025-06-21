@@ -4,15 +4,6 @@ A full-stack personal finance tracker web app for recording income and expenses,
 
 ---
 
-## 📸 Demo
-
-![Finance Tracker Screenshot - Light Theme](screenshots/light-theme.png)
-![Finance Tracker Screenshot - Dark Theme](screenshots/dark-theme.png)
-
-> 🎥 Coming soon: short demo video/gif of features in action.
-
----
-
 ## ✨ Features
 
 - ✅ Add, edit, and delete transactions (Income/Expense)
@@ -57,20 +48,23 @@ A full-stack personal finance tracker web app for recording income and expenses,
 
 1. Clone the repo:
 
-````bash
+```bash
 git clone https://github.com/yourusername/finance-tracker.git
 cd finance-tracker
+```
 
 2. Create and activate virtual environment:
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
 3. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
 
 4. Run the server:
 
@@ -78,13 +72,13 @@ pip install -r requirements.txt
 python app.py
 
 Open index.html in a browser:
+```
 
 📦 API Endpoints
-| Method | Endpoint                 | Description                |
+| Method | Endpoint | Description |
 | ------ | ------------------------ | -------------------------- |
-| GET    | `/api/transactions`      | Fetch all transactions     |
-| POST   | `/api/transactions`      | Add a new transaction      |
-| PUT    | `/api/transactions/<id>` | Update a transaction       |
-| DELETE | `/api/transactions/<id>` | Delete a transaction       |
-| GET    | `/export`                | Export transactions as CSV |
-````
+| GET | `/api/transactions` | Fetch all transactions |
+| POST | `/api/transactions` | Add a new transaction |
+| PUT | `/api/transactions/<id>` | Update a transaction |
+| DELETE | `/api/transactions/<id>` | Delete a transaction |
+| GET | `/export` | Export transactions as CSV |
